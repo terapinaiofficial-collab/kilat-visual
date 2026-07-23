@@ -28,7 +28,23 @@ window.__KV_CONFIG = {
 
   /* -- 3. LINK CHATGPT ----------------------------------------------- */
   chatgptUrl: "https://chatgpt.com/",   // ChatGPT biasa (dipakai semua tools)
-  gptUrl:     "",                       // link Custom GPT kamu (kosong "" = tombol disembunyikan)
+
+  // Custom GPT UMUM — dipakai modul yang belum punya GPT sendiri di bawah.
+  // Kosong "" = tombol GPT disembunyikan di modul tersebut.
+  gptUrl: "",
+
+  // Custom GPT KHUSUS PER MODUL (lebih diutamakan daripada gptUrl di atas).
+  // Isi link-nya di modul yang sesuai. Kosong "" = pakai gptUrl / disembunyikan.
+  gptUrls: {
+    logo:     "https://chatgpt.com/g/g-6a0a7a9fded48191b03bbb6005edf5c8-terapin-ai-logo-builder",
+    kemasan:  "",
+    banner:   "",
+    poster:   "",
+    katalog:  "",
+    mockup:   "",
+    konten:   "",
+    brandkit: ""
+  },
 
   /* -- 4. SOCIAL (footer) — kosong "" = ikon disembunyikan ----------- */
   instagramUrl:    "",

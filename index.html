@@ -158,6 +158,32 @@
   .form-grid .field{margin-bottom:0}
   .form-grid .field.full{grid-column:1/-1}
   #m-gen{margin-top:20px}
+  /* section header inside form */
+  .sec-h{grid-column:1/-1;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);display:flex;align-items:center;gap:8px;margin-top:20px;padding-top:20px;border-top:1px solid var(--border)}
+  .sec-h:first-child{margin-top:0;padding-top:0;border-top:0}
+  .sec-h .zap{width:13px;height:13px}
+  /* pill chips (single & multi select) */
+  .chipset{display:flex;flex-wrap:wrap;gap:8px}
+  .pchip{background:var(--bg-deep);border:1px solid var(--border);color:var(--muted);font-family:var(--font);
+    font-size:13px;padding:8px 13px;border-radius:100px;cursor:pointer;transition:.15s;line-height:1.2}
+  .pchip:hover{border-color:var(--border-strong);color:var(--text)}
+  .pchip.on{background:rgba(var(--accent-rgb),.15);border-color:var(--accent);color:var(--text);font-weight:600}
+  /* category picker */
+  .catsearch{margin-bottom:10px}
+  .catgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-height:270px;overflow-y:auto;padding-right:4px}
+  .catbtn{background:var(--bg-deep);border:1px solid var(--border);color:var(--muted);font-family:var(--font);
+    font-size:12.5px;font-weight:500;padding:11px 10px;border-radius:10px;cursor:pointer;text-align:left;transition:.15s;line-height:1.3}
+  .catbtn:hover{border-color:var(--border-strong);color:var(--text)}
+  .catbtn.on{background:rgba(var(--accent-rgb),.15);border-color:var(--accent);color:var(--text);font-weight:700}
+  .subwrap{margin-top:12px;padding:15px 16px;background:rgba(var(--accent-rgb),.06);border:1px solid var(--border-strong);border-radius:13px}
+  .subwrap .sub-t{font-size:11.5px;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:11px}
+  /* color swatches */
+  .swatches{display:flex;flex-wrap:wrap;gap:12px;padding-bottom:22px}
+  .sw{width:38px;height:38px;border-radius:11px;border:2px solid rgba(148,163,184,.25);cursor:pointer;position:relative;padding:0}
+  .sw.on{border-color:var(--accent);box-shadow:0 0 0 3px rgba(var(--accent-rgb),.28)}
+  .sw i{position:absolute;top:43px;left:50%;transform:translateX(-50%);font-size:10px;font-style:normal;color:var(--faint);white-space:nowrap}
+  .sw.on i{color:var(--text)}
   .out-box{position:relative}
   .out-pre{background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;padding:16px;font-family:var(--mono);font-size:12.5px;line-height:1.6;color:#cbd5e1;white-space:pre-wrap;word-break:break-word;max-height:360px;overflow:auto;min-height:120px}
   .out-empty{color:var(--faint);font-family:var(--font);font-size:14px;display:flex;align-items:center;justify-content:center;text-align:center;min-height:220px;padding:20px}
@@ -167,6 +193,7 @@
   .copied{position:absolute;top:12px;right:12px;background:var(--accent);color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;opacity:0;transition:.2s;pointer-events:none}
   .copied.show{opacity:1}
 
+  @media(min-width:901px){ #m-outpanel{position:sticky;top:82px} }
   @media(max-width:900px){
     .mod-grid{grid-template-columns:repeat(2,1fr)}
     .feat-grid,.steps{grid-template-columns:1fr}
@@ -176,6 +203,7 @@
     .mod-grid{grid-template-columns:1fr}
     .form-grid{grid-template-columns:1fr}
     .form-grid .field.full{grid-column:auto}
+    .catgrid{grid-template-columns:repeat(2,1fr)}
     .hero-cta{flex-direction:column}.hero-cta .btn{width:100%}
     section{padding:56px 0}
   }
@@ -296,7 +324,7 @@
           <div class="form-grid" id="m-form"></div>
           <button class="btn btn-primary btn-block" id="m-gen"><svg class="zap" viewBox="0 0 24 24"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13z"/></svg> Buat Prompt</button>
         </div>
-        <div class="panel">
+        <div class="panel" id="m-outpanel">
           <p class="panel-title"><svg class="zap" viewBox="0 0 24 24"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13z"/></svg> Prompt Kamu</p>
           <div class="out-box">
             <div class="copied" id="m-copied">✓ Tersalin</div>
@@ -325,7 +353,7 @@
     accentColor:"#fe6402", bgColor:"#0c0a09",
     price:"149.000", priceStrike:"700.000",
     paymentUrl:"https://CHECKOUT-KAMU.com",
-    chatgptUrl:"https://chatgpt.com/", gptUrl:"",
+    chatgptUrl:"https://chatgpt.com/", gptUrl:"", gptUrls:{},
     instagramUrl:"", instagramHandle:"", facebookUrl:"", facebookHandle:"",
     showResellerTier:true, resellerPrice:"499.000", resellerStrike:"3.000.000", resellerPaymentUrl:"",
     sheetCsvUrl:"",
@@ -375,31 +403,143 @@
   function sty(v){return STYLE_EN[v]||v;}
   function col(v){return (v&&v.trim())?v.trim():"a fitting brand color palette";}
 
+  /* ================= KATEGORI BISNIS (mengikuti struktur Tokopedia) =================
+     Mau tambah/ubah kategori? Edit daftar di bawah ini — otomatis muncul di form. */
+  var KATEGORI={
+    "Fashion Wanita":["Atasan wanita","Bawahan wanita","Dress","Rok","Outerwear & jaket","Batik wanita","Jumpsuit","Setelan","Pakaian dalam","Lingerie & sleepwear","Baju hamil","Kebaya","Pakaian renang"],
+    "Fashion Pria":["Kaos","Kemeja","Celana panjang","Celana pendek","Jaket & outerwear","Batik pria","Sweater & hoodie","Setelan jas","Baju koko","Pakaian dalam","Rompi"],
+    "Fashion Muslim":["Hijab & kerudung","Gamis","Abaya","Tunik","Khimar","Mukena","Baju koko","Sarung","Peci & kopiah","Busana muslim anak","Manset & inner"],
+    "Fashion Anak & Bayi":["Baju bayi","Baju anak perempuan","Baju anak laki-laki","Setelan anak","Jaket anak","Seragam sekolah","Sepatu anak","Aksesori anak","Pakaian dalam anak","Kostum anak"],
+    "Sepatu":["Sneakers","Sepatu formal","Sepatu olahraga","Sepatu boots","Sandal","Sepatu wanita","Sepatu pria","Sepatu bayi","Perawatan sepatu","Kaos kaki"],
+    "Tas & Dompet":["Tas wanita","Tas pria","Ransel","Tas selempang","Tas laptop","Tas sekolah","Dompet","Koper","Tas belanja","Pouch & clutch"],
+    "Jam Tangan & Aksesori":["Jam tangan pria","Jam tangan wanita","Kacamata","Ikat pinggang","Topi","Syal & scarf","Perhiasan","Cincin","Kalung","Gelang","Anting"],
+    "Kecantikan":["Skincare","Makeup","Perawatan wajah","Serum & essence","Sunscreen","Masker wajah","Perawatan rambut","Parfum","Alat kecantikan","Perawatan kuku","Perawatan bibir"],
+    "Perawatan Tubuh":["Sabun mandi","Body lotion","Body scrub","Deodoran","Perawatan tangan & kaki","Perawatan pria","Pasta & sikat gigi","Perawatan kewanitaan"],
+    "Kesehatan":["Suplemen & vitamin","Obat & P3K","Herbal & tradisional","Alat kesehatan","Masker & sanitizer","Alat terapi","Nutrisi & susu","Alat bantu medis"],
+    "Makanan & Minuman":["Makanan ringan","Kopi","Teh","Minuman kemasan","Bumbu & bahan masak","Frozen food","Kue & roti","Cokelat & permen","Makanan sehat","Sembako","Madu","Sirup & jus","Makanan siap saji","Katering","Oleh-oleh & camilan khas"],
+    "Ibu & Bayi":["Susu & nutrisi bayi","Popok","Perlengkapan menyusui","Perawatan bayi","Mainan bayi","Stroller & car seat","Perlengkapan makan bayi","Pakaian ibu hamil","Baby gear"],
+    "Rumah Tangga":["Perlengkapan kebersihan","Peralatan tidur","Tirai & karpet","Penyimpanan & organizer","Lampu & penerangan","Perlengkapan kamar mandi","Alat kebersihan","Pengharum ruangan"],
+    "Dapur":["Peralatan masak","Peralatan makan","Wadah & toples","Pisau & talenan","Alat panggang","Perlengkapan minum","Penyimpanan makanan","Alat kue"],
+    "Furnitur & Dekorasi":["Meja","Kursi","Lemari & rak","Sofa","Tempat tidur","Hiasan dinding","Cermin","Karpet","Tanaman hias & pot","Jam dinding","Bingkai foto"],
+    "Elektronik":["TV & audio","Kulkas","Mesin cuci","AC & kipas","Rice cooker","Blender & mixer","Setrika","Vacuum cleaner","Water heater","Dispenser","Microwave & oven"],
+    "Handphone & Tablet":["Handphone","Tablet","Casing & pelindung","Charger & kabel","Powerbank","Headset & earphone","Aksesori HP","Kartu perdana & pulsa"],
+    "Komputer & Laptop":["Laptop","PC desktop","Monitor","Keyboard & mouse","Printer & scanner","Storage & hardisk","Komponen PC","Networking & wifi","Software","Aksesori komputer"],
+    "Kamera":["Kamera DSLR & mirrorless","Action camera","Lensa","Tripod & gimbal","Drone","Lighting & studio","Memory card","Aksesori kamera"],
+    "Gaming":["Konsol game","Game fisik & digital","Aksesori gaming","PC & laptop gaming","Kursi & meja gaming","Top-up game","Merchandise game"],
+    "Olahraga":["Alat fitness","Sepeda","Pakaian olahraga","Sepatu olahraga","Bola & raket","Perlengkapan renang","Outdoor & camping","Yoga & pilates","Bela diri","Suplemen olahraga"],
+    "Otomotif":["Sparepart mobil","Sparepart motor","Aksesori mobil","Aksesori motor","Helm","Oli & cairan","Ban & velg","Audio mobil","Perawatan kendaraan","Alat bengkel"],
+    "Mainan & Hobi":["Mainan anak","Action figure","Puzzle & board game","Model kit","RC & drone","Alat musik","Barang koleksi","Kerajinan tangan","Alat lukis & gambar","Diecast"],
+    "Buku & Alat Tulis":["Buku fiksi","Buku non-fiksi","Buku anak","Buku pelajaran","Komik","Majalah","Alat tulis","Kertas & buku catatan","Perlengkapan kantor","E-book"],
+    "Perawatan Hewan":["Makanan anjing","Makanan kucing","Aksesori hewan","Kandang","Grooming & perawatan","Obat & vitamin hewan","Akuarium & ikan","Burung & unggas"],
+    "Pertanian":["Bibit & benih","Pupuk","Pestisida","Alat pertanian","Tanaman hias","Media tanam","Hidroponik","Alat perkebunan"],
+    "Pertukangan & Industri":["Alat pertukangan","Alat listrik","Mesin industri","Material bangunan","Cat & finishing","Alat ukur","Alat las","Safety & pengaman"],
+    "Kantor & Bisnis":["Perlengkapan kantor","Furnitur kantor","Mesin kantor","Kemasan & packaging","Alat kasir","Seragam kerja","Display & signage"],
+    "Produk Digital":["Pulsa & paket data","Token listrik","Voucher game","Langganan streaming","E-book & kursus online","Software & lisensi","Template & aset desain","Jasa digital"],
+    "Servis & Jasa":["Jasa desain","Jasa perbaikan","Jasa kebersihan","Jasa antar & kurir","Les & kursus","Konsultan","Fotografi & videografi","Event organizer","Jasa cetak","Laundry"],
+    "Tiket & Voucher":["Tiket pesawat","Tiket kereta","Tiket event & konser","Tiket wisata","Voucher belanja","Voucher makanan","Hotel & penginapan"],
+    "Travel & Wisata":["Paket wisata","Hotel & penginapan","Perlengkapan travel","Sewa kendaraan","Tour guide","Umrah & haji"],
+    "Wedding & Pesta":["Undangan","Souvenir","Dekorasi pesta","Gaun & busana pengantin","Katering pesta","Wedding organizer","Balon & properti","Hampers & gift"],
+    "Logam Mulia & Investasi":["Emas batangan","Perhiasan emas","Perak","Koin koleksi","Produk investasi"],
+    "Properti":["Rumah","Apartemen","Tanah","Ruko & kantor","Kost & sewa","Jasa properti"]
+  };
+
+  var WARNA=[["black","Hitam","#111827"],["white","White","#f8fafc"],["blue","Biru","#3b82f6"],["purple","Ungu","#8b5cf6"],
+    ["teal","Teal","#0d9488"],["green","Hijau","#16a34a"],["red","Merah","#dc2626"],["orange","Oranye","#f97316"],
+    ["brown","Coklat","#92400e"],["pink","Pink","#db2777"],["grey","Abu","#6b7280"],["yellow","Kuning","#eab308"],["gold","Emas","#d4af37"]];
+
+  var TARGET_OPTS=[["children (0–12 yrs)","Anak-anak (0–12)"],["teens (13–17 yrs)","Remaja (13–17)"],["young adults (18–30 yrs)","Dewasa muda (18–30)"],
+    ["adults (31–50 yrs)","Dewasa (31–50)"],["seniors (50+)","Senior (50+)"],["all ages","Semua usia"],["men","Pria"],["women","Wanita"],
+    ["small business owners (UMKM)","UMKM & pelaku bisnis"],["corporate clients","Korporat & perusahaan"]];
+
+  var GAYA_OPTS=[["minimalist","Minimalis"],["modern","Modern"],["vintage / retro","Vintage / retro"],["playful / cheerful","Playful / ceria"],
+    ["luxury / premium","Mewah / premium"],["traditional / ethnic Indonesian","Tradisional / etnik"],["strong / masculine","Tegas / maskulin"],
+    ["feminine / elegant","Feminin / elegan"],["futuristic / tech","Futuristik / tech"],["cartoon / illustrative","Kartun / ilustrasi"]];
+
+  var FORMAT_OPTS=[["icon + text combination mark","Ikon + teks (kombinasi)"],["wordmark (text only)","Teks saja (wordmark)"],
+    ["icon / symbol only","Ikon / simbol saja"],["monogram / initials","Monogram / inisial"],["emblem / badge","Emblem / badge"]];
+
+  var KESAN_OPTS=[["trustworthy","Terpercaya"],["friendly & warm","Ramah & hangat"],["professional","Profesional"],["exclusive & luxurious","Eksklusif & mewah"],
+    ["energetic & dynamic","Energik & dinamis"],["fresh & natural","Segar & natural"],["bold & strong","Berani & kuat"],["creative & unique","Kreatif & unik"],
+    ["affordable & accessible","Murah & terjangkau"],["modern & innovative","Modern & inovatif"]];
+
+  var PLATFORM_OPTS=[["Shopee / Tokopedia storefront","Toko Shopee / Tokopedia"],["TikTok Shop","TikTok Shop"],["social media (Instagram, Facebook)","Media sosial (IG, FB)"],
+    ["product packaging","Kemasan produk"],["banners & signage","Spanduk / banner"],["website","Website"],["uniforms & apparel","Seragam / baju"],["all platforms","Semua platform"]];
+
   /* ================= MODULES ================= */
   var MODULES=[
     {
-      id:"logo", name:"Kilat Logo", tag:"1 foto → 16–20 logo profesional", glyph:GLY.logo,
-      note:'klik <b>Salin Prompt</b> → buka ChatGPT → <b>lampirkan foto objekmu</b> → tempel → kirim. Dapat sistem 16–20 logo + analisis.',
+      id:"logo", name:"Kilat Logo", tag:"Brief lengkap → 16–20 logo profesional", glyph:GLY.logo,
+      note:'klik <b>Salin Prompt</b> → buka ChatGPT → tempel → kirim. <b>Punya foto objeknya? lampirkan</b> sebelum kirim. Dapat sistem 16–20 logo + analisis.',
       fields:[
-        {k:"subject",l:"Objek / subjek logo *",t:"ta",full:1,ph:"mis. seekor burung elang, buah naga, secangkir kopi, huruf 'H'",req:1},
-        {k:"brand",l:"Nama brand (opsional)",t:"text",ph:"mis. Kilat Visual"},
-        {k:"tagline",l:"Slogan (opsional)",t:"text",ph:"mis. Smart Living"},
-        {k:"tone",l:"Tone brand",t:"sel",o:[['modern','Modern'],['tech','Tech / Futuristik'],['luxury','Luxury / Mewah'],['playful','Playful / Ceria'],['corporate','Corporate']]},
-        {k:"character",l:"Karakter visual",t:"sel",o:[['geometric','Geometris'],['sharp','Tajam'],['soft','Lembut'],['organic','Organik']]},
-        {k:"market",l:"Positioning pasar",t:"sel",o:[['premium','Premium'],['mass market','Mass market'],['high-ticket','High-ticket']]},
-        {k:"variations",l:"Jumlah variasi",t:"sel",o:[['16','16 variasi'],['18','18 variasi'],['20','20 variasi']]},
-        {k:"color",l:"Warna (opsional)",t:"text",ph:"mis. biru & abu, atau #3b82f6"}
+        {t:"sec",l:"Identitas Brand"},
+        {k:"brand",l:"Nama brand *",t:"text",ph:"mis. Kilat Visual",req:1},
+        {k:"tagline",l:"Tagline / slogan (opsional)",t:"text",ph:"cth: Rasa Ibu, Harga Terjangkau"},
+        {k:"subject",l:"Objek / simbol yang diinginkan (opsional)",t:"ta",full:1,ph:"mis. burung elang, biji kopi, huruf 'K'",hint:"Kosongkan = AI yang usulkan simbol sesuai kategori bisnismu. Punya fotonya? lampirkan saat menempel prompt."},
+
+        {t:"sec",l:"Kategori Bisnis"},
+        {k:"kategori",l:"Kategori bisnis *",t:"cat",full:1,req:1},
+
+        {t:"sec",l:"Target Market"},
+        {k:"target",l:"Target market *",t:"multi",full:1,req:1,o:TARGET_OPTS,hint:"Boleh pilih lebih dari satu"},
+        {k:"targetLain",l:"Target market lainnya (opsional)",t:"text",full:1,ph:"mis. komunitas pendaki, ibu rumah tangga"},
+
+        {t:"sec",l:"Gaya & Estetika"},
+        {k:"gaya",l:"Gaya logo",t:"chips",full:1,o:GAYA_OPTS},
+        {k:"gayaLain",l:"Gaya lainnya (opsional)",t:"text",full:1,ph:"Gaya lainnya..."},
+        {k:"format",l:"Format logo",t:"chips",full:1,o:FORMAT_OPTS},
+        {k:"warna",l:"Warna yang diinginkan",t:"colors",full:1,hint:"Boleh pilih lebih dari satu warna"},
+        {k:"warnaLain",l:"Warna spesifik / kode hex (opsional)",t:"text",full:1,ph:"mis. #fe6402, tosca & krem"},
+        {k:"kesan",l:"Kesan yang ingin disampaikan",t:"multi",full:1,o:KESAN_OPTS},
+
+        {t:"sec",l:"Detail Tambahan"},
+        {k:"platform",l:"Platform penggunaan logo",t:"multi",full:1,o:PLATFORM_OPTS},
+        {k:"variasi",l:"Jumlah variasi",t:"sel",o:[['16','16 variasi'],['18','18 variasi'],['20','20 variasi']]},
+        {k:"market",l:"Positioning pasar",t:"sel",o:[['mass market','Mass market'],['premium','Premium'],['high-ticket','High-ticket']]},
+        {k:"referensi",l:"Referensi brand (opsional)",t:"text",ph:"cth: Nike, Grab, BCA",hint:"Brand yang gayanya kamu suka"},
+        {k:"hindari",l:"Hindari (opsional)",t:"text",ph:"cth: warna kuning, gaya kartun",hint:"Warna/gaya yang tidak diinginkan"},
+        {k:"catatan",l:"Catatan tambahan (opsional)",t:"ta",full:1,ph:"Informasi lain yang ingin kamu sampaikan ke AI..."}
       ],
       build:function(v){
-        var N=v.variations||"20", grid={16:"4×4",18:"6×3",20:"5×4"}[N]||"grid", name=(v.brand||"").trim();
-        var tone={modern:"modern",tech:"tech / futuristic",luxury:"luxury / high-end",playful:"playful / friendly",corporate:"corporate"}[v.tone]||v.tone;
-        var chr={geometric:"geometric",sharp:"sharp",soft:"soft",organic:"organic"}[v.character]||v.character;
+        var A=function(x){return [].concat(x||[]).filter(Boolean);};
+        var T=function(x){return String(x||"").trim();};
+        var N=v.variasi||"20", grid={16:"4×4",18:"6×3",20:"5×4"}[N]||"grid";
+        var name=T(v.brand);
+        var biz=T(v.kategori)+(T(v.subkategori)?" — "+T(v.subkategori):"");
+        var target=A(v.target); if(T(v.targetLain)) target.push(T(v.targetLain));
+        var gaya=A(v.gaya); if(T(v.gayaLain)) gaya.push(T(v.gayaLain));
+        var warna=A(v.warna); if(T(v.warnaLain)) warna.push(T(v.warnaLain));
+        var kesan=A(v.kesan), plat=A(v.platform);
         var cats=["geometric","line art / monoline","negative space","emblem / crest","badge / seal","abstract symbol","modern app icon"];
         if(name) cats.push('monogram (initials of "'+name+'")');
-        var p="You are an elite logo system designer at a world-class branding agency. Turn the SUBJECT below into a COHESIVE LOGO SYSTEM of "+N+" variations — one brand, many expressions, NOT "+N+" random logos.\n\n";
-        p+="=== BRAND BRIEF ===\nSubject: "+(v.subject||"(describe the attached photo)")+"\nBrand name: "+(name||"(none — icon/symbol only)")+"\nTagline: "+((v.tagline||"").trim()||"(none)")+"\nBrand tone: "+tone+"\nVisual character: "+chr+"\nMarket positioning: "+(v.market||"premium")+"\nColor: "+col(v.color)+"\n\n";
-        p+="=== METHODOLOGY ===\nPHASE 1 VISUAL DNA: extract silhouette, geometric structure, repetition, signature elements.\nPHASE 2 ABSTRACTION: literal, semi-abstract, symbolic.\nPHASE 3 GEOMETRIC SYSTEM: consistent angles (30/45/60°), unified stroke weight, clean curves.\nPHASE 4 "+N+" VARIATIONS across: "+cats.join(", ")+".\nPHASE 5 CONSISTENCY: unified look, strong silhouette, works in B&W and at favicon size.\nPHASE 6 LAYOUT: a clean "+grid+" grid on a light neutral background, each logo labeled.\n\n";
-        p+="=== DELIVERABLE ===\n1) Generate the "+grid+" logo-system grid as an IMAGE.\n2) Then: Visual DNA Analysis, Concept Direction, Logo System Breakdown, and Branding Insight.\nIf a reference photo is attached, base the DNA on it. Keep every logo minimal and scalable.";
+
+        var p="You are an elite logo system designer at a world-class branding agency. Turn the brief below into a COHESIVE LOGO SYSTEM of "+N+" variations for ONE brand — many expressions of a single identity, NOT "+N+" unrelated logos.\n\n";
+        p+="=== BRAND BRIEF ===\n";
+        p+="Brand name: "+name+"\n";
+        if(T(v.tagline)) p+="Tagline: "+T(v.tagline)+"\n";
+        p+="Business category: "+biz+"\n";
+        if(target.length) p+="Target market: "+target.join(", ")+"\n";
+        p+="Market positioning: "+(v.market||"mass market")+"\n";
+        p+=T(v.subject) ? ("Visual subject to build the logo from: "+T(v.subject)+"\n")
+                        : ("Visual subject: NOT specified — propose symbols that genuinely fit the business category above.\n");
+        if(gaya.length)  p+="Logo style: "+gaya.join(", ")+"\n";
+        if(v.format)     p+="Preferred logo format: "+v.format+" (make this the primary/hero logo, but still show the other categories as supporting variations)\n";
+        p+="Color direction: "+(warna.length?warna.join(", "):"choose a palette that fits the category and impression")+"\n";
+        if(kesan.length) p+="Impression the brand must convey: "+kesan.join(", ")+"\n";
+        if(plat.length)  p+="Will be used on: "+plat.join(", ")+" — so it must stay legible as a small marketplace thumbnail and social avatar\n";
+        if(T(v.referensi)) p+="Brand references the client likes (style inspiration only, never copy): "+T(v.referensi)+"\n";
+        if(T(v.hindari))   p+="STRICTLY AVOID: "+T(v.hindari)+"\n";
+        if(T(v.catatan))   p+="Extra notes: "+T(v.catatan)+"\n";
+        p+="\n=== METHODOLOGY ===\n";
+        p+="PHASE 1 VISUAL DNA: extract silhouette, geometric structure, repetition, signature elements.\n";
+        p+="PHASE 2 ABSTRACTION: literal, semi-abstract, symbolic.\n";
+        p+="PHASE 3 GEOMETRIC SYSTEM: consistent angles (30/45/60°), unified stroke weight, clean curves.\n";
+        p+="PHASE 4 "+N+" VARIATIONS across: "+cats.join(", ")+".\n";
+        p+="PHASE 5 CONSISTENCY: unified look, strong silhouette, works in B&W and at favicon size.\n";
+        p+="PHASE 6 LAYOUT: a clean "+grid+" grid on a light neutral background, each logo labeled.\n\n";
+        p+="=== DELIVERABLE ===\n";
+        p+="1) Generate the "+grid+" logo-system grid as an IMAGE.\n";
+        p+="2) Then: Visual DNA Analysis, Concept Direction, Logo System Breakdown, Branding Insight, and the exact HEX codes used.\n";
+        p+="If a reference photo is attached, base the visual DNA on it. Keep every logo minimal, scalable, and appropriate for the target market above.";
         return p;
       }
     },
@@ -631,34 +771,104 @@
     lg.appendChild(card);
   });
 
+  var mState={};
+  function chipsHTML(f,multi){
+    return '<div class="chipset" data-chips="'+f.k+'"'+(multi?' data-multi="1"':'')+'>'+
+      (f.o||[]).map(function(o){return '<button type="button" class="pchip" data-v="'+esc(o[0])+'">'+esc(o[1])+'</button>';}).join('')+'</div>';
+  }
+  function colorsHTML(f){
+    return '<div class="swatches" data-chips="'+f.k+'" data-multi="1">'+
+      WARNA.map(function(c){return '<button type="button" class="sw" data-v="'+esc(c[0])+'" style="background:'+c[2]+'" title="'+esc(c[1])+'"><i>'+esc(c[1])+'</i></button>';}).join('')+'</div>';
+  }
+  function catHTML(){
+    return '<input class="catsearch" id="cat-search" type="text" placeholder="Cari kategori..." autocomplete="off"/>'+
+      '<div class="catgrid" id="cat-grid">'+
+      Object.keys(KATEGORI).map(function(k){return '<button type="button" class="catbtn" data-cat="'+esc(k)+'">'+esc(k)+'</button>';}).join('')+
+      '</div><div id="sub-wrap"></div>';
+  }
+  function renderSub(cat){
+    var w=$('#sub-wrap'); if(!w) return;
+    var subs=KATEGORI[cat]||[];
+    w.innerHTML = subs.length ? ('<div class="subwrap"><div class="sub-t">Sub kategori — '+esc(cat)+'</div><div class="chipset" data-chips="subkategori">'+
+      subs.map(function(s){return '<button type="button" class="pchip" data-v="'+esc(s)+'">'+esc(s)+'</button>';}).join('')+'</div></div>') : '';
+  }
   function fieldHTML(f){
+    if(f.t==='sec') return '<div class="sec-h"><svg class="zap" viewBox="0 0 24 24"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13z"/></svg>'+esc(f.l)+'</div>';
     var lab='<label for="mf-'+f.k+'">'+esc(f.l)+'</label>';
     var inner;
     if(f.t==='ta') inner='<textarea id="mf-'+f.k+'" data-k="'+f.k+'" placeholder="'+esc(f.ph||'')+'"></textarea>';
     else if(f.t==='sel'){var opts=(f.o||[]).map(function(o){return '<option value="'+esc(o[0])+'">'+esc(o[1])+'</option>';}).join('');inner='<select id="mf-'+f.k+'" data-k="'+f.k+'">'+opts+'</select>';}
+    else if(f.t==='chips') inner=chipsHTML(f,false);
+    else if(f.t==='multi') inner=chipsHTML(f,true);
+    else if(f.t==='colors') inner=colorsHTML(f);
+    else if(f.t==='cat') inner=catHTML();
     else inner='<input id="mf-'+f.k+'" data-k="'+f.k+'" type="text" placeholder="'+esc(f.ph||'')+'"/>';
     var hint=f.hint?'<div class="hint">'+esc(f.hint)+'</div>':'';
     return '<div class="field'+(f.full?' full':'')+'">'+lab+inner+hint+'</div>';
   }
+
+  /* chips / swatches / kategori — satu handler untuk semua */
+  mForm.addEventListener('click',function(e){
+    var chip=e.target.closest('.pchip,.sw');
+    if(chip){
+      var box=chip.parentNode, k=box.getAttribute('data-chips'), multi=box.getAttribute('data-multi')==='1', val=chip.getAttribute('data-v');
+      if(multi){
+        var arr=[].concat(mState[k]||[]), i=arr.indexOf(val);
+        if(i>-1){arr.splice(i,1);chip.classList.remove('on');}else{arr.push(val);chip.classList.add('on');}
+        mState[k]=arr;
+      }else{
+        var was=mState[k]===val;
+        Array.prototype.forEach.call(box.children,function(b){b.classList.remove('on');});
+        if(was){mState[k]="";}else{mState[k]=val;chip.classList.add('on');}
+      }
+      return;
+    }
+    var cb=e.target.closest('.catbtn');
+    if(cb){
+      var cat=cb.getAttribute('data-cat');
+      Array.prototype.forEach.call(mForm.querySelectorAll('.catbtn'),function(b){b.classList.toggle('on',b===cb);});
+      mState.kategori=cat; mState.subkategori="";
+      renderSub(cat);
+    }
+  });
+  mForm.addEventListener('input',function(e){
+    if(e.target.id!=='cat-search') return;
+    var q=e.target.value.toLowerCase();
+    Array.prototype.forEach.call(mForm.querySelectorAll('.catbtn'),function(b){
+      b.style.display = b.textContent.toLowerCase().indexOf(q)>-1 ? '' : 'none';
+    });
+  });
+
   function openModule(m){
-    activeMod=m; lastPrompt="";
+    activeMod=m; lastPrompt=""; mState={};
     $('#m-title').textContent=m.name;
     $('#m-sub').textContent=m.tag;
     $('#m-note').innerHTML='<b>Cara pakai:</b> '+m.note;
     mForm.innerHTML=m.fields.map(fieldHTML).join('');
     mOut.className='out-pre out-empty'; mOut.innerHTML='Isi brief di sebelah kiri, lalu klik <b style="color:var(--accent);margin:0 4px">Buat Prompt</b>.';
     mActions.style.display='none';
+    // tombol Custom GPT: khusus per modul (gptUrls), fallback ke gptUrl umum
+    var gu=(C.gptUrls&&C.gptUrls[m.id])||C.gptUrl||"";
+    var mgpt=$('#m-gpt');
+    if(gu){mgpt.setAttribute('href',gu);mgpt.textContent='Buka '+m.name+' GPT →';mgpt.style.display='';}
+    else{mgpt.style.display='none';}
     launcher.style.display='none'; moduleView.style.display=''; window.scrollTo(0,0);
   }
   function showLauncher(){moduleView.style.display='none';launcher.style.display='';window.scrollTo(0,0);}
   $('#back-btn').addEventListener('click',showLauncher);
 
-  function getVals(){var o={};Array.prototype.forEach.call(mForm.querySelectorAll('[data-k]'),function(inp){o[inp.getAttribute('data-k')]=inp.value;});return o;}
+  function getVals(){
+    var o={};
+    Array.prototype.forEach.call(mForm.querySelectorAll('[data-k]'),function(inp){o[inp.getAttribute('data-k')]=inp.value;});
+    Object.keys(mState).forEach(function(k){o[k]=mState[k];});
+    return o;
+  }
+  function isEmpty(val){return Array.isArray(val)?val.length===0:!String(val==null?'':val).trim();}
 
   $('#m-gen').addEventListener('click',function(){
     if(!activeMod) return;
     var v=getVals();
-    var missing=activeMod.fields.filter(function(f){return f.req && !(v[f.k]||'').trim();});
+    var missing=activeMod.fields.filter(function(f){return f.req && isEmpty(v[f.k]);});
     if(missing.length){
       mOut.className='out-pre out-empty';
       mOut.innerHTML='Isi dulu <b style="color:var(--accent);margin:0 4px">'+esc(missing[0].l.replace(' *',''))+'</b> ya.';
@@ -672,7 +882,6 @@
     navigator.clipboard.writeText(lastPrompt).then(function(){mCopied.classList.add('show');setTimeout(function(){mCopied.classList.remove('show');},1600);});
   });
   $('#m-chatgpt').setAttribute('href',C.chatgptUrl||'https://chatgpt.com/');
-  if(C.gptUrl){var mgpt=$('#m-gpt');mgpt.setAttribute('href',C.gptUrl);mgpt.style.display='';}
 })();
 </script>
 </body>
