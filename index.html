@@ -1,0 +1,679 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- ============================================================
+     TEMPEL META PIXEL / TRACKING DI SINI (kalau ada) — lihat PANDUAN
+     ============================================================ -->
+
+<title>Kilat Visual — Studio Desain AI</title>
+<meta name="description" content="8 tools desain AI dalam satu studio: logo, kemasan, banner, poster, katalog, mockup, konten, brand kit. Isi brief, salin prompt, tempel ke ChatGPT. Jadi." />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Kilat Visual — Studio Desain AI" />
+<meta property="og:description" content="8 tools desain AI dalam satu studio. Dari brief ke desain profesional dalam hitungan menit." />
+<meta name="theme-color" content="#fe6402" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<!-- Konfigurasi white-label (edit config.js, tanpa build). Dimuat sebelum app. -->
+<script src="/config.js"></script>
+
+<style>
+  :root{
+    --accent:#3b82f6; --accent-hover:#60a5fa; --accent-deep:#1e3a8a; --accent-rgb:59,130,246;
+    --bg:#0a0e1a; --bg-deep:#060910; --bg-panel:#111726; --bg-elev:#182136;
+    --text:#f1f5f9; --muted:rgba(241,245,249,.62); --faint:rgba(241,245,249,.40);
+    --border:rgba(148,163,184,.15); --border-strong:rgba(var(--accent-rgb),.38);
+    --maxw:1140px;
+    --font:'Inter',system-ui,-apple-system,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);
+    line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
+  ::selection{background:rgba(var(--accent-rgb),.32)}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+
+  [data-view="landing"] #view-login,[data-view="landing"] #view-app,
+  [data-view="login"] #view-landing,[data-view="login"] #view-app,
+  [data-view="app"] #view-landing,[data-view="app"] #view-login{display:none}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+  .accent{color:var(--accent)}
+  .zap{width:1em;height:1em;display:inline-block;vertical-align:-.12em;fill:currentColor}
+
+  .btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--font);font-weight:700;font-size:15px;
+    padding:13px 24px;border-radius:12px;border:0;cursor:pointer;transition:transform .15s,box-shadow .2s,background .2s;white-space:nowrap;text-align:center;justify-content:center}
+  .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-deep));color:#fff;box-shadow:0 8px 30px rgba(var(--accent-rgb),.35)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(var(--accent-rgb),.5)}
+  .btn-ghost{background:rgba(var(--accent-rgb),.09);color:var(--text);border:1px solid var(--border-strong)}
+  .btn-ghost:hover{background:rgba(var(--accent-rgb),.16)}
+  .btn-block{width:100%}
+  .btn-sm{padding:9px 16px;font-size:13.5px}
+
+  header.nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(10,14,26,.72);border-bottom:1px solid var(--border)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:66px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;letter-spacing:-.01em}
+  .brand .mark{width:34px;height:34px;flex:0 0 34px}
+  .brand img.logo{width:34px;height:34px;object-fit:contain;border-radius:8px}
+
+  .hero{position:relative;padding:74px 0 60px;text-align:center;overflow:hidden}
+  .hero::before{content:"";position:absolute;top:-160px;left:50%;transform:translateX(-50%);
+    width:720px;height:520px;background:radial-gradient(ellipse at center,rgba(var(--accent-rgb),.28),transparent 62%);filter:blur(20px);pointer-events:none;z-index:0}
+  .hero>*{position:relative;z-index:1}
+  .eyebrow{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+    background:rgba(var(--accent-rgb),.1);border:1px solid var(--border-strong);padding:6px 13px;border-radius:100px;margin-bottom:22px}
+  h1.hero-title{font-size:clamp(33px,6.2vw,60px);line-height:1.03;font-weight:900;letter-spacing:-.028em;margin:0 auto 20px;max-width:15ch}
+  .hero-sub{font-size:clamp(15.5px,2.3vw,19px);color:var(--muted);max-width:58ch;margin:0 auto 30px}
+  .hero-cta{display:flex;gap:13px;justify-content:center;flex-wrap:wrap;align-items:center}
+  .chips{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted);border:1px solid var(--border);border-radius:100px;padding:7px 14px;background:var(--bg-panel)}
+  .chip .zap{color:var(--accent)}
+
+  section{padding:74px 0;position:relative}
+  .sec-eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);text-align:center;margin-bottom:12px}
+  h2.sec-title{font-size:clamp(26px,4.2vw,40px);font-weight:800;letter-spacing:-.02em;text-align:center;margin:0 auto 14px;max-width:22ch;line-height:1.1}
+  .sec-lead{text-align:center;color:var(--muted);max-width:54ch;margin:0 auto 46px;font-size:16px}
+
+  /* module cards (shared: landing showcase + app launcher) */
+  .mod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .mod-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:16px;padding:22px 20px;transition:border-color .2s,transform .2s;text-align:left}
+  .mod-card.clickable{cursor:pointer}
+  .mod-card.clickable:hover{border-color:var(--border-strong);transform:translateY(-3px)}
+  .mod-glyph{width:50px;height:50px;border-radius:12px;background:rgba(var(--accent-rgb),.1);display:flex;align-items:center;justify-content:center;margin-bottom:15px}
+  .mod-glyph svg{width:26px;height:26px;color:var(--accent)}
+  .mod-card h3{margin:0 0 4px;font-size:15.5px;font-weight:700}
+  .mod-card p{margin:0;font-size:13px;color:var(--muted);line-height:1.5}
+
+  .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .feat{background:linear-gradient(180deg,var(--bg-panel),rgba(17,23,38,.4));border:1px solid var(--border);border-radius:16px;padding:26px 24px}
+  .feat .ico{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:rgba(var(--accent-rgb),.12);margin-bottom:16px}
+  .feat .ico svg{width:23px;height:23px;color:var(--accent)}
+  .feat h3{margin:0 0 7px;font-size:17px;font-weight:700}
+  .feat p{margin:0;color:var(--muted);font-size:14.5px}
+
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .step{position:relative;padding:30px 24px 26px;background:var(--bg-panel);border:1px solid var(--border);border-radius:16px}
+  .step-n{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--accent);background:rgba(var(--accent-rgb),.12);border:1px solid var(--border-strong);width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+  .step h3{margin:0 0 7px;font-size:17px;font-weight:700}
+  .step p{margin:0;color:var(--muted);font-size:14.5px}
+
+  .price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px;max-width:760px;margin:0 auto}
+  .price-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:20px;padding:32px 28px;display:flex;flex-direction:column}
+  .price-card.feature{border-color:var(--border-strong);box-shadow:0 0 0 1px rgba(var(--accent-rgb),.18),0 24px 60px rgba(0,0,0,.4);position:relative}
+  .price-tag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:var(--accent);color:#fff;padding:5px 14px;border-radius:100px;font-weight:600}
+  .price-card h3{margin:0 0 4px;font-size:15px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  .price-num{font-size:44px;font-weight:900;letter-spacing:-.03em;margin:8px 0 2px;display:flex;align-items:baseline;gap:8px}
+  .price-num .rp{font-size:20px;font-weight:700;color:var(--muted)}
+  .price-num .st{font-size:17px;font-weight:600;color:var(--faint);text-decoration:line-through}
+  .price-feats{list-style:none;padding:0;margin:20px 0 26px;display:flex;flex-direction:column;gap:11px}
+  .price-feats li{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;color:var(--text)}
+  .price-feats li svg{width:18px;height:18px;color:var(--accent);flex:0 0 18px;margin-top:2px}
+  .price-card .btn{margin-top:auto}
+
+  footer{border-top:1px solid var(--border);padding:44px 0 40px;background:var(--bg-deep)}
+  .foot-in{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+  .foot-social{display:flex;gap:12px;align-items:center}
+  .foot-social a{width:38px;height:38px;border-radius:10px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted);transition:.2s}
+  .foot-social a:hover{color:var(--accent);border-color:var(--border-strong)}
+  .foot-social svg{width:18px;height:18px}
+  .foot-copy{color:var(--faint);font-size:13px}
+
+  #view-login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 22px;background:radial-gradient(ellipse at 50% 0,rgba(var(--accent-rgb),.14),transparent 60%),var(--bg)}
+  .auth-card{width:100%;max-width:400px;background:var(--bg-panel);border:1px solid var(--border);border-radius:20px;padding:34px 30px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+  .auth-card .brand{justify-content:center;margin-bottom:6px}
+  .auth-card .sub{text-align:center;color:var(--muted);font-size:14px;margin-bottom:26px}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:7px}
+  .field input,.field textarea,.field select{width:100%;padding:12px 14px;border-radius:11px;background:var(--bg-deep);border:1px solid var(--border);color:var(--text);font-size:15px;font-family:var(--font)}
+  .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);outline:none}
+  .field textarea{resize:vertical;line-height:1.5}
+  .field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2394a3b8' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+  .field .hint{font-size:12px;color:var(--faint);margin-top:6px}
+  .auth-msg{font-size:13px;min-height:18px;margin:4px 0 10px;text-align:center}
+  .auth-msg.err{color:#f87171}
+  .auth-back{text-align:center;margin-top:18px;font-size:13px;color:var(--faint)}
+  .auth-back a{color:var(--accent)}
+
+  #view-app{min-height:100vh;background:var(--bg)}
+  .app-bar{position:sticky;top:0;z-index:40;backdrop-filter:blur(14px);background:rgba(10,14,26,.8);border-bottom:1px solid var(--border)}
+  .app-bar-in{display:flex;align-items:center;justify-content:space-between;height:62px}
+  .app-main{padding:34px 0 70px}
+  .tool-head{text-align:center;margin-bottom:34px}
+  .tool-head h1{font-size:clamp(24px,4vw,34px);font-weight:800;letter-spacing:-.02em;margin:0 0 8px}
+  .tool-head p{color:var(--muted);margin:0;font-size:15px}
+  .back-btn{background:none;border:0;color:var(--muted);font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;padding:6px 0;margin-bottom:12px;display:inline-flex;align-items:center;gap:6px}
+  .back-btn:hover{color:var(--accent)}
+  .tool-layout{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+  .panel{background:var(--bg-panel);border:1px solid var(--border);border-radius:18px;padding:26px 24px}
+  .panel-title{font-size:13px;font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin:0 0 20px;display:flex;align-items:center;gap:8px}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .form-grid .field{margin-bottom:0}
+  .form-grid .field.full{grid-column:1/-1}
+  #m-gen{margin-top:20px}
+  .out-box{position:relative}
+  .out-pre{background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;padding:16px;font-family:var(--mono);font-size:12.5px;line-height:1.6;color:#cbd5e1;white-space:pre-wrap;word-break:break-word;max-height:360px;overflow:auto;min-height:120px}
+  .out-empty{color:var(--faint);font-family:var(--font);font-size:14px;display:flex;align-items:center;justify-content:center;text-align:center;min-height:220px;padding:20px}
+  .out-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .out-note{margin-top:16px;padding:14px 16px;background:rgba(var(--accent-rgb),.07);border:1px solid var(--border-strong);border-radius:12px;font-size:13px;color:var(--muted);line-height:1.55}
+  .out-note b{color:var(--text)}
+  .copied{position:absolute;top:12px;right:12px;background:var(--accent);color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:100px;opacity:0;transition:.2s;pointer-events:none}
+  .copied.show{opacity:1}
+
+  @media(max-width:900px){
+    .mod-grid{grid-template-columns:repeat(2,1fr)}
+    .feat-grid,.steps{grid-template-columns:1fr}
+    .tool-layout{grid-template-columns:1fr}
+  }
+  @media(max-width:520px){
+    .mod-grid{grid-template-columns:1fr}
+    .form-grid{grid-template-columns:1fr}
+    .form-grid .field.full{grid-column:auto}
+    .hero-cta{flex-direction:column}.hero-cta .btn{width:100%}
+    section{padding:56px 0}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body data-view="landing">
+
+<!-- ================= LANDING ================= -->
+<div id="view-landing">
+  <header class="nav">
+    <div class="wrap nav-in">
+      <div class="brand" id="brand-nav"></div>
+      <button class="btn btn-ghost btn-sm" data-goto="login"><svg class="zap" viewBox="0 0 24 24"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13z"/></svg> Masuk</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="wrap">
+      <span class="eyebrow"><svg class="zap" viewBox="0 0 24 24"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13z"/></svg> Studio Desain AI</span>
+      <h1 class="hero-title">Semua Desain Brand-mu, <span class="accent">Satu Prompt</span></h1>
+      <p class="hero-sub">Logo, kemasan, banner, poster, katalog, mockup, konten, sampai brand kit — 8 tools AI dalam satu studio. Isi brief singkat, salin prompt, tempel ke ChatGPT. Jadi.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" id="hero-buy"><svg class="zap" viewBox="0 0 24 24"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13z"/></svg> <span id="hero-buy-label">Beli Sekarang</span></a>
+        <a class="btn btn-ghost" href="#modul">Lihat 8 Tools</a>
+      </div>
+      <div class="chips">
+        <span class="chip"><svg class="zap" viewBox="0 0 24 24"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13z"/></svg> 8 Tools</span>
+        <span class="chip"><svg class="zap" viewBox="0 0 24 24"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13z"/></svg> AI Powered</span>
+        <span class="chip"><svg class="zap" viewBox="0 0 24 24"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13z"/></svg> Tanpa Software Mahal</span>
+        <span class="chip"><svg class="zap" viewBox="0 0 24 24"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13z"/></svg> Siap Pakai</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="modul">
+    <div class="wrap">
+      <div class="sec-eyebrow">Isi Studio</div>
+      <h2 class="sec-title">8 tools desain, <span class="accent">satu login</span></h2>
+      <p class="sec-lead">Setiap tools menyusun prompt profesional siap tempel ke ChatGPT — dari logo sampai brand kit lengkap.</p>
+      <div class="mod-grid" id="modules-grid"></div>
+    </div>
+  </section>
+
+  <section id="fitur">
+    <div class="wrap">
+      <div class="sec-eyebrow">Kenapa Kilat Visual</div>
+      <h2 class="sec-title">Kualitas agensi, <span class="accent">tanpa ribet</span></h2>
+      <div class="feat-grid" id="feat-grid"></div>
+    </div>
+  </section>
+
+  <section id="cara">
+    <div class="wrap">
+      <div class="sec-eyebrow">Cara Kerja</div>
+      <h2 class="sec-title">3 langkah, desain jadi</h2>
+      <p class="sec-lead">Pilih tools, isi brief, salin prompt, tempel ke ChatGPT. Beres.</p>
+      <div class="steps" id="steps"></div>
+    </div>
+  </section>
+
+  <section id="harga">
+    <div class="wrap">
+      <div class="sec-eyebrow">Mulai Sekarang</div>
+      <h2 class="sec-title">Sekali bayar, <span class="accent">pakai selamanya</span></h2>
+      <div class="price-grid" id="price-grid"></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap foot-in">
+      <div class="brand" id="brand-foot"></div>
+      <div class="foot-social" id="foot-social"></div>
+      <div class="foot-copy" id="foot-copy"></div>
+    </div>
+  </footer>
+</div>
+
+<!-- ================= LOGIN ================= -->
+<div id="view-login">
+  <div class="auth-card">
+    <div class="brand" id="brand-login"></div>
+    <div class="sub">Masuk untuk mengakses studio</div>
+    <form id="login-form" autocomplete="off">
+      <div class="field"><label for="in-email">Email</label><input id="in-email" type="email" placeholder="email@kamu.com" required /></div>
+      <div class="field"><label for="in-pass">Password</label><input id="in-pass" type="password" placeholder="••••••••" required /></div>
+      <div class="auth-msg" id="login-msg"></div>
+      <button class="btn btn-primary btn-block" type="submit" id="login-btn">Masuk</button>
+    </form>
+    <div class="auth-back"><a href="#" data-goto="landing">← Kembali ke halaman utama</a></div>
+  </div>
+</div>
+
+<!-- ================= APP / STUDIO ================= -->
+<div id="view-app">
+  <div class="app-bar">
+    <div class="wrap app-bar-in">
+      <div class="brand" id="brand-app"></div>
+      <button class="btn btn-ghost btn-sm" id="logout-btn">Keluar</button>
+    </div>
+  </div>
+  <div class="wrap app-main">
+    <!-- launcher -->
+    <div id="launcher">
+      <div class="tool-head">
+        <h1>Studio Kilat Visual</h1>
+        <p>Pilih salah satu tools untuk mulai. Semua menghasilkan prompt siap tempel ke ChatGPT.</p>
+      </div>
+      <div class="mod-grid" id="module-grid"></div>
+    </div>
+    <!-- module -->
+    <div id="module-view" style="display:none">
+      <button class="back-btn" id="back-btn">← Semua tools</button>
+      <div class="tool-head"><h1 id="m-title"></h1><p id="m-sub"></p></div>
+      <div class="tool-layout">
+        <div class="panel">
+          <p class="panel-title"><svg class="zap" viewBox="0 0 24 24"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13z"/></svg> Brief</p>
+          <div class="form-grid" id="m-form"></div>
+          <button class="btn btn-primary btn-block" id="m-gen"><svg class="zap" viewBox="0 0 24 24"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13z"/></svg> Buat Prompt</button>
+        </div>
+        <div class="panel">
+          <p class="panel-title"><svg class="zap" viewBox="0 0 24 24"><path d="M13 2L4.5 13.5H11l-1 8.5L19.5 10H13z"/></svg> Prompt Kamu</p>
+          <div class="out-box">
+            <div class="copied" id="m-copied">✓ Tersalin</div>
+            <div class="out-pre out-empty" id="m-out">Isi brief di sebelah kiri, lalu klik <b style="color:var(--accent);margin:0 4px">Buat Prompt</b>.</div>
+          </div>
+          <div class="out-actions" id="m-actions" style="display:none">
+            <button class="btn btn-primary" id="m-copy"><svg class="zap" viewBox="0 0 24 24" style="width:15px;height:15px"><path d="M9 2h6a2 2 0 012 2v0h1a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h1a2 2 0 012-2z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg> Salin Prompt</button>
+            <a class="btn btn-ghost" id="m-chatgpt" target="_blank" rel="noopener">Buka ChatGPT →</a>
+            <a class="btn btn-ghost" id="m-gpt" target="_blank" rel="noopener" style="display:none">Buka Custom GPT →</a>
+          </div>
+          <div class="out-note" id="m-note"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var SALT='kilatvisual-2026::';
+
+  /* ---------- config ---------- */
+  var D={
+    brandName:"Kilat Visual", tagline:"Studio Desain AI", logoUrl:"",
+    accentColor:"#fe6402", bgColor:"#0c0a09",
+    price:"149.000", priceStrike:"700.000",
+    paymentUrl:"https://CHECKOUT-KAMU.com",
+    chatgptUrl:"https://chatgpt.com/", gptUrl:"",
+    instagramUrl:"", instagramHandle:"", facebookUrl:"", facebookHandle:"",
+    showResellerTier:true, resellerPrice:"499.000", resellerStrike:"3.000.000", resellerPaymentUrl:"",
+    sheetCsvUrl:"",
+    loginPasswordHash:"7319f80f932449d31d86405b07114e4d81dff4e902f9d11b58208bed952e02e1"
+  };
+  var C=Object.assign({},D,(window.__KV_CONFIG||{}));
+
+  /* ---------- theme ---------- */
+  function hexRgb(h){h=String(h).replace('#','').trim();if(h.length===3)h=h.split('').map(function(c){return c+c;}).join('');if(!/^[0-9a-fA-F]{6}$/.test(h))return null;return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
+  function cl(n){return Math.max(0,Math.min(255,Math.round(n)));}
+  function lighten(a,p){return [cl(a[0]+(255-a[0])*p),cl(a[1]+(255-a[1])*p),cl(a[2]+(255-a[2])*p)];}
+  function darken(a,p){return [cl(a[0]*(1-p)),cl(a[1]*(1-p)),cl(a[2]*(1-p))];}
+  function rgb(a){return 'rgb('+a[0]+','+a[1]+','+a[2]+')';}
+  var rs=document.documentElement.style, ac=hexRgb(C.accentColor), bg=hexRgb(C.bgColor);
+  if(ac){rs.setProperty('--accent',rgb(ac));rs.setProperty('--accent-rgb',ac.join(','));rs.setProperty('--accent-hover',rgb(lighten(ac,.2)));rs.setProperty('--accent-deep',rgb(darken(ac,.4)));}
+  if(bg){rs.setProperty('--bg',rgb(bg));rs.setProperty('--bg-deep',rgb(darken(bg,.45)));rs.setProperty('--bg-panel',rgb(lighten(bg,.05)));rs.setProperty('--bg-elev',rgb(lighten(bg,.11)));}
+  document.title=C.brandName+' — '+C.tagline;
+
+  var $=function(s,el){return (el||document).querySelector(s);};
+  function el(html){var d=document.createElement('div');d.innerHTML=html.trim();return d.firstChild;}
+  function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
+  function brandHTML(){
+    var m=C.logoUrl?'<img class="logo" src="'+esc(C.logoUrl)+'" alt="'+esc(C.brandName)+'"/>'
+      :'<svg class="mark" viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="10" fill="var(--accent)"/><path d="M22 8L13 22h6l-1.5 10L28 17h-6z" fill="#fff"/></svg>';
+    var parts=C.brandName.split(' '), last=parts.length>1?parts.pop():'', first=parts.join(' ');
+    return m+'<span>'+esc(first)+(last?' <span class="accent">'+esc(last)+'</span>':'')+'</span>';
+  }
+  ['brand-nav','brand-foot','brand-login','brand-app'].forEach(function(id){var n=$('#'+id);if(n)n.innerHTML=brandHTML();});
+
+  /* ---------- svg helpers ---------- */
+  function g(inner){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+inner+'</svg>';}
+  var GLY={
+    logo:g('<path d="M12 3l7 4v8l-7 4-7-4V7z"/><path d="M9 15c1-4 5-4 6 0"/>'),
+    kemasan:g('<path d="M12 3l8 4-8 4-8-4z"/><path d="M4 7v10l8 4 8-4V7"/><path d="M12 11v10"/>'),
+    banner:g('<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 11h10M7 14h6"/>'),
+    poster:g('<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/>'),
+    katalog:g('<path d="M12 5c-2-1.5-5-1.5-7 0v13c2-1.5 5-1.5 7 0 2-1.5 5-1.5 7 0V5c-2-1.5-5-1.5-7 0z"/><path d="M12 5v14"/>'),
+    mockup:g('<path d="M9 4l3 2 3-2 4 3-2 2v9H7v-9L5 7z"/>'),
+    konten:g('<rect x="6" y="3" width="12" height="18" rx="3"/><circle cx="12" cy="16" r="1.4" fill="currentColor" stroke="none"/><path d="M10 6h4"/>'),
+    brandkit:g('<circle cx="12" cy="12" r="9"/><circle cx="9" cy="9" r="1.3" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1.3" fill="currentColor" stroke="none"/><circle cx="9" cy="15" r="1.3" fill="currentColor" stroke="none"/><path d="M14 14l3 3"/>')
+  };
+
+  /* ---------- shared option sets ---------- */
+  var STYLE_OPTS=[['modern','Modern minimalis'],['luxury','Mewah / Luxury'],['natural','Natural / Organik'],['playful','Ceria / Playful'],['bold','Bold / Berani'],['vintage','Vintage / Retro'],['elegant','Elegan']];
+  var STYLE_EN={modern:"modern minimalist",luxury:"luxury / premium",natural:"natural / organic",playful:"playful / vibrant",bold:"bold / high-impact",vintage:"vintage / retro",elegant:"elegant"};
+  function sty(v){return STYLE_EN[v]||v;}
+  function col(v){return (v&&v.trim())?v.trim():"a fitting brand color palette";}
+
+  /* ================= MODULES ================= */
+  var MODULES=[
+    {
+      id:"logo", name:"Kilat Logo", tag:"1 foto → 16–20 logo profesional", glyph:GLY.logo,
+      note:'klik <b>Salin Prompt</b> → buka ChatGPT → <b>lampirkan foto objekmu</b> → tempel → kirim. Dapat sistem 16–20 logo + analisis.',
+      fields:[
+        {k:"subject",l:"Objek / subjek logo *",t:"ta",full:1,ph:"mis. seekor burung elang, buah naga, secangkir kopi, huruf 'H'",req:1},
+        {k:"brand",l:"Nama brand (opsional)",t:"text",ph:"mis. Kilat Visual"},
+        {k:"tagline",l:"Slogan (opsional)",t:"text",ph:"mis. Smart Living"},
+        {k:"tone",l:"Tone brand",t:"sel",o:[['modern','Modern'],['tech','Tech / Futuristik'],['luxury','Luxury / Mewah'],['playful','Playful / Ceria'],['corporate','Corporate']]},
+        {k:"character",l:"Karakter visual",t:"sel",o:[['geometric','Geometris'],['sharp','Tajam'],['soft','Lembut'],['organic','Organik']]},
+        {k:"market",l:"Positioning pasar",t:"sel",o:[['premium','Premium'],['mass market','Mass market'],['high-ticket','High-ticket']]},
+        {k:"variations",l:"Jumlah variasi",t:"sel",o:[['16','16 variasi'],['18','18 variasi'],['20','20 variasi']]},
+        {k:"color",l:"Warna (opsional)",t:"text",ph:"mis. biru & abu, atau #3b82f6"}
+      ],
+      build:function(v){
+        var N=v.variations||"20", grid={16:"4×4",18:"6×3",20:"5×4"}[N]||"grid", name=(v.brand||"").trim();
+        var tone={modern:"modern",tech:"tech / futuristic",luxury:"luxury / high-end",playful:"playful / friendly",corporate:"corporate"}[v.tone]||v.tone;
+        var chr={geometric:"geometric",sharp:"sharp",soft:"soft",organic:"organic"}[v.character]||v.character;
+        var cats=["geometric","line art / monoline","negative space","emblem / crest","badge / seal","abstract symbol","modern app icon"];
+        if(name) cats.push('monogram (initials of "'+name+'")');
+        var p="You are an elite logo system designer at a world-class branding agency. Turn the SUBJECT below into a COHESIVE LOGO SYSTEM of "+N+" variations — one brand, many expressions, NOT "+N+" random logos.\n\n";
+        p+="=== BRAND BRIEF ===\nSubject: "+(v.subject||"(describe the attached photo)")+"\nBrand name: "+(name||"(none — icon/symbol only)")+"\nTagline: "+((v.tagline||"").trim()||"(none)")+"\nBrand tone: "+tone+"\nVisual character: "+chr+"\nMarket positioning: "+(v.market||"premium")+"\nColor: "+col(v.color)+"\n\n";
+        p+="=== METHODOLOGY ===\nPHASE 1 VISUAL DNA: extract silhouette, geometric structure, repetition, signature elements.\nPHASE 2 ABSTRACTION: literal, semi-abstract, symbolic.\nPHASE 3 GEOMETRIC SYSTEM: consistent angles (30/45/60°), unified stroke weight, clean curves.\nPHASE 4 "+N+" VARIATIONS across: "+cats.join(", ")+".\nPHASE 5 CONSISTENCY: unified look, strong silhouette, works in B&W and at favicon size.\nPHASE 6 LAYOUT: a clean "+grid+" grid on a light neutral background, each logo labeled.\n\n";
+        p+="=== DELIVERABLE ===\n1) Generate the "+grid+" logo-system grid as an IMAGE.\n2) Then: Visual DNA Analysis, Concept Direction, Logo System Breakdown, and Branding Insight.\nIf a reference photo is attached, base the DNA on it. Keep every logo minimal and scalable.";
+        return p;
+      }
+    },
+    {
+      id:"kemasan", name:"Kilat Kemasan", tag:"Desain kemasan + mockup 3D produk", glyph:GLY.kemasan,
+      note:'klik <b>Salin Prompt</b> → ChatGPT (yang bisa generate gambar) → <b>lampirkan logo produkmu</b> → tempel → kirim. Dapat desain kemasan + mockup 3D.',
+      fields:[
+        {k:"name",l:"Nama produk *",t:"text",ph:"mis. Kopi Senja",req:1},
+        {k:"cat",l:"Kategori produk",t:"sel",o:[['food','Makanan'],['beverage','Minuman'],['coffee & tea','Kopi & Teh'],['snack','Snack'],['cosmetics / skincare','Kosmetik & Skincare'],['supplement / herbal','Suplemen & Herbal'],['fashion','Fashion'],['general consumer product','Lainnya']]},
+        {k:"type",l:"Jenis kemasan",t:"sel",o:[['folding carton box','Kotak / Box'],['stand-up pouch','Standing Pouch'],['sachet','Sachet'],['bottle','Botol'],['jar','Toples / Jar'],['can','Kaleng / Can'],['squeeze tube','Tube'],['product label','Label / Stiker'],['paper bag','Paper Bag'],['food packaging box','Kemasan Makanan'],['cup / container','Cup / Gelas']]},
+        {k:"desc",l:"Deskripsi singkat (opsional)",t:"ta",full:1,ph:"mis. kopi robusta premium; keripik pisang cokelat; serum brightening"},
+        {k:"style",l:"Gaya desain",t:"sel",o:STYLE_OPTS},
+        {k:"color",l:"Warna dominan (opsional)",t:"text",ph:"mis. hijau tosca & krem"},
+        {k:"output",l:"Yang mau dihasilkan",t:"sel",o:[['both','Desain + Mockup 3D'],['flat','Desain flat saja'],['mockup','Mockup 3D saja']]}
+      ],
+      build:function(v){
+        var type=v.type||"folding carton box", out=v.output||"both", name=v.name;
+        var p="You are a senior packaging designer at a world-class branding agency.\n\n=== PRODUCT BRIEF ===\nProduct name: "+name+"\nCategory: "+(v.cat||"general consumer product")+"\nPackaging type: "+type+"\n";
+        if((v.desc||"").trim()) p+="Description: "+v.desc.trim()+"\n";
+        p+="Design style: "+sty(v.style)+"\nDominant colors: "+col(v.color)+"\n\n";
+        if(out==='flat'||out==='both'){p+="TASK 1 — PACKAGING DESIGN (flat, print-ready): design professional "+type+" graphics showing the name \""+name+"\" prominently, clean layout, strong hierarchy, tasteful colors, shelf-ready and on-brand. Incorporate an attached logo if provided.\n\n";}
+        if(out==='mockup'||out==='both'){p+="TASK "+(out==='both'?"2":"1")+" — 3D MOCKUP (photorealistic): render the "+type+" "+(out==='both'?"applying the design from Task 1":("with a "+sty(v.style)+" design in "+col(v.color)+" featuring \""+name+"\""))+". Studio lighting, clean neutral background, realistic materials, soft shadows, high resolution.\n\n";}
+        p+="Generate the result as an IMAGE. Use any attached logo faithfully.";
+        return p;
+      }
+    },
+    {
+      id:"banner", name:"Kilat Banner", tag:"Banner iklan & promo, semua ukuran", glyph:GLY.banner,
+      note:'klik <b>Salin Prompt</b> → ChatGPT → tempel → kirim. Dapat banner sesuai platform & ukuranmu. Lampirkan logo bila perlu.',
+      fields:[
+        {k:"product",l:"Brand / produk *",t:"text",ph:"mis. Kopi Senja",req:1},
+        {k:"goal",l:"Tujuan banner",t:"sel",o:[['promote a special offer / discount','Promo / Diskon'],['launch a new product','Launch produk'],['promote an event','Event / Acara'],['build brand awareness','Awareness brand']]},
+        {k:"platform",l:"Platform / ukuran",t:"sel",o:[['Instagram post (1:1 square)','IG Post (1:1)'],['Instagram story (9:16 vertical)','IG Story (9:16)'],['Facebook / web banner (16:9 wide)','FB / Web (16:9)'],['YouTube thumbnail (16:9)','YouTube Thumbnail'],['marketplace banner (wide)','Banner Marketplace']]},
+        {k:"headline",l:"Teks utama / headline *",t:"text",full:1,ph:"mis. DISKON 50% HARI INI",req:1},
+        {k:"subtext",l:"Teks pendukung (opsional)",t:"text",ph:"mis. berlaku sampai akhir bulan"},
+        {k:"style",l:"Gaya desain",t:"sel",o:STYLE_OPTS},
+        {k:"color",l:"Warna (opsional)",t:"text",ph:"mis. merah & kuning"}
+      ],
+      build:function(v){
+        var p="You are a senior graphic designer creating a high-converting marketing banner.\n\n=== BRIEF ===\nBrand/product: "+v.product+"\nGoal: "+(v.goal||"promote a special offer")+"\nFormat: "+(v.platform||"Instagram post (1:1 square)")+"\nMain headline: \""+v.headline+"\"\n";
+        if((v.subtext||"").trim()) p+="Supporting text: \""+v.subtext.trim()+"\"\n";
+        p+="Style: "+sty(v.style)+"\nColors: "+col(v.color)+"\n\n";
+        p+="Design an eye-catching, professional advertising banner in the exact format above. Make the headline the clear focal point — big, bold, and readable. Strong contrast, balanced composition, clean space around the text, modern ad design. If a logo is attached, place it tastefully. Generate as an IMAGE in the correct aspect ratio.";
+        return p;
+      }
+    },
+    {
+      id:"poster", name:"Kilat Poster", tag:"Poster promo, event & produk", glyph:GLY.poster,
+      note:'klik <b>Salin Prompt</b> → ChatGPT → tempel → kirim. Dapat poster siap cetak/posting.',
+      fields:[
+        {k:"title",l:"Judul poster *",t:"text",full:1,ph:"mis. GRAND OPENING",req:1},
+        {k:"goal",l:"Tujuan",t:"sel",o:[['an event','Event / Acara'],['a promo / discount','Promo / Diskon'],['a product launch','Launch produk'],['information / education','Informasi / Edukasi']]},
+        {k:"details",l:"Detail yang ditampilkan (opsional)",t:"ta",full:1,ph:"mis. Sabtu, 10 Agustus · Jl. Merdeka 12 · gratis kopi untuk 50 pengunjung pertama"},
+        {k:"style",l:"Gaya desain",t:"sel",o:STYLE_OPTS},
+        {k:"orient",l:"Orientasi",t:"sel",o:[['portrait (A4/A3)','Potret (A4/A3)'],['square','Persegi'],['landscape','Lanskap']]},
+        {k:"color",l:"Warna (opsional)",t:"text",ph:"mis. biru tua & emas"}
+      ],
+      build:function(v){
+        var p="You are a senior poster designer.\n\n=== BRIEF ===\nPoster for: "+(v.goal||"a promo")+"\nOrientation: "+(v.orient||"portrait (A4/A3)")+"\nTitle: \""+v.title+"\"\n";
+        if((v.details||"").trim()) p+="Details to include (lay out clearly): "+v.details.trim()+"\n";
+        p+="Style: "+sty(v.style)+"\nColors: "+col(v.color)+"\n\n";
+        p+="Design a professional promotional poster in the orientation above. Bold, prominent title; clear visual hierarchy so the details are easy to read; strong focal imagery; print-ready and polished. Generate as an IMAGE.";
+        return p;
+      }
+    },
+    {
+      id:"katalog", name:"Kilat Katalog", tag:"Layout katalog produk & brosur", glyph:GLY.katalog,
+      note:'klik <b>Salin Prompt</b> → ChatGPT → tempel → kirim. Dapat layout katalog/brosur produkmu.',
+      fields:[
+        {k:"biz",l:"Nama bisnis / brand *",t:"text",ph:"mis. Senja Store",req:1},
+        {k:"ptype",l:"Jenis produk / industri *",t:"text",ph:"mis. produk fashion muslim; makanan beku; furnitur",req:1},
+        {k:"layout",l:"Layout",t:"sel",o:[['a clean grid of products','Grid rapi'],['a list layout','Daftar (list)'],['an editorial / magazine layout','Majalah / editorial']]},
+        {k:"pages",l:"Format",t:"sel",o:[['a single catalog page','1 halaman'],['a two-page spread','Spread 2 halaman'],['a catalog cover','Cover katalog']]},
+        {k:"style",l:"Gaya desain",t:"sel",o:STYLE_OPTS},
+        {k:"color",l:"Warna (opsional)",t:"text",ph:"mis. krem & cokelat"}
+      ],
+      build:function(v){
+        var p="You are a senior layout/print designer.\n\n=== BRIEF ===\nBusiness: "+v.biz+"\nProducts / industry: "+v.ptype+"\nDeliverable: "+(v.pages||"a single catalog page")+"\nLayout: "+(v.layout||"a clean grid of products")+"\nStyle: "+sty(v.style)+"\nColors: "+col(v.color)+"\n\n";
+        p+="Design a professional product catalog/brochure with the layout above. Include clear product placeholders each with space for a product name and price, consistent branding with the business name, generous whitespace, and clean typography. Polished, print-ready. Generate as an IMAGE.";
+        return p;
+      }
+    },
+    {
+      id:"mockup", name:"Kilat Mockup", tag:"Logo/desain di produk nyata (3D)", glyph:GLY.mockup,
+      note:'klik <b>Salin Prompt</b> → ChatGPT → <b>lampirkan logo/desainmu</b> → tempel → kirim. Dapat mockup 3D realistis.',
+      fields:[
+        {k:"item",l:"Mau di-mockup di apa?",t:"sel",o:[['a t-shirt','Kaos / T-shirt'],['a mug','Mug'],['a business card','Kartu Nama'],['a phone app screen','Layar HP / App'],['a billboard','Billboard'],['a tote bag','Tote Bag'],['a book cover','Cover Buku'],['a storefront sign','Papan Nama / Signage'],['a hoodie','Hoodie'],['a tumbler','Tumbler']]},
+        {k:"design",l:"Deskripsi logo/desain yang ditempel *",t:"ta",full:1,ph:"mis. logo 'Kilat Visual' warna biru dengan simbol petir",req:1},
+        {k:"scene",l:"Suasana / scene",t:"sel",o:[['a clean studio','Studio bersih'],['a realistic lifestyle setting','Lifestyle / nyata'],['an outdoor setting','Outdoor'],['a modern desk setup','Meja kerja modern']]},
+        {k:"color",l:"Warna dominan (opsional)",t:"text",ph:"mis. putih & biru"}
+      ],
+      build:function(v){
+        var item=v.item||"a t-shirt";
+        var p="You are a product mockup specialist / 3D visualization artist.\n\n=== BRIEF ===\nItem: "+item+"\nDesign to apply: "+v.design+"\nScene: "+(v.scene||"a clean studio")+"\nColors: "+col(v.color)+"\n\n";
+        p+="Create a photorealistic 3D mockup of "+item+" featuring the design above, placed in the scene above. Studio-quality lighting, realistic materials and fabric/surface texture, soft shadows, professional product photography, high resolution. If a logo/design file is attached, apply it faithfully and in correct perspective. Generate as an IMAGE.";
+        return p;
+      }
+    },
+    {
+      id:"konten", name:"Kilat Konten", tag:"Konten sosmed: feed, carousel, story", glyph:GLY.konten,
+      note:'klik <b>Salin Prompt</b> → ChatGPT → tempel → kirim. Dapat desain konten sosmed siap posting.',
+      fields:[
+        {k:"brand",l:"Nama brand / akun *",t:"text",ph:"mis. @kilatvisual",req:1},
+        {k:"ctype",l:"Jenis konten",t:"sel",o:[['a single feed post','Feed post'],['a multi-slide carousel','Carousel (multi-slide)'],['a story','Story'],['a quote graphic','Quote / Kata-kata'],['a promo post','Promo'],['an educational / tips post','Tips / Edukasi']]},
+        {k:"topic",l:"Topik / pesan *",t:"ta",full:1,ph:"mis. 5 tips memilih kopi yang enak; promo bundling akhir bulan",req:1},
+        {k:"platform",l:"Platform",t:"sel",o:[['Instagram','Instagram'],['TikTok','TikTok'],['Facebook','Facebook']]},
+        {k:"style",l:"Gaya desain",t:"sel",o:STYLE_OPTS},
+        {k:"color",l:"Warna (opsional)",t:"text",ph:"mis. pastel"}
+      ],
+      build:function(v){
+        var ct=v.ctype||"a single feed post";
+        var p="You are a social media content designer.\n\n=== BRIEF ===\nBrand/account: "+v.brand+"\nContent type: "+ct+"\nPlatform: "+(v.platform||"Instagram")+"\nTopic/message: "+v.topic+"\nStyle: "+sty(v.style)+"\nColors: "+col(v.color)+"\n\n";
+        p+="Design a scroll-stopping, on-brand "+ct+" for "+(v.platform||"Instagram")+". Clear readable text, strong hook, modern social-media aesthetic, consistent branding.";
+        if(ct.indexOf("carousel")>-1) p+=" Design it as a cohesive multi-slide set (a cover slide + several content slides that share one visual system).";
+        p+=" Generate as an IMAGE"+(ct.indexOf("carousel")>-1?" set":"")+".";
+        return p;
+      }
+    },
+    {
+      id:"brandkit", name:"Kilat Brand Kit", tag:"Identitas brand lengkap + style guide", glyph:GLY.brandkit,
+      note:'klik <b>Salin Prompt</b> → ChatGPT → tempel → kirim. Dapat brand board + palet warna (hex) + font + contoh penerapan.',
+      fields:[
+        {k:"brand",l:"Nama brand *",t:"text",ph:"mis. Kilat Visual",req:1},
+        {k:"industry",l:"Industri / bidang *",t:"text",ph:"mis. kedai kopi; skincare lokal; jasa desain",req:1},
+        {k:"personality",l:"Kepribadian brand",t:"sel",o:[['modern','Modern'],['luxury','Mewah'],['playful','Playful'],['natural','Natural'],['bold','Bold'],['elegant','Elegan'],['tech','Tech']]},
+        {k:"audience",l:"Target market (opsional)",t:"text",ph:"mis. anak muda urban 18–30"},
+        {k:"color",l:"Preferensi warna (opsional)",t:"text",ph:"mis. earth tone; biru & putih"}
+      ],
+      build:function(v){
+        var p="You are a brand identity designer at a top branding studio.\n\n=== BRIEF ===\nBrand: "+v.brand+"\nIndustry: "+v.industry+"\nBrand personality: "+(v.personality||"modern")+"\n";
+        if((v.audience||"").trim()) p+="Target audience: "+v.audience.trim()+"\n";
+        if((v.color||"").trim()) p+="Color preference: "+v.color.trim()+"\n";
+        p+="\nCreate a complete BRAND KIT and present it as a clean, professional brand-board IMAGE containing:\n1) A primary logo concept + a simplified icon version.\n2) A color palette with 4–6 swatches AND their HEX codes (primary, secondary, accent, neutrals).\n3) A typography pairing (heading + body) with the actual font names shown.\n4) Example applications: business card, social media avatar, and packaging/label.\n\nAfter the image, also LIST as text: the exact HEX codes and the font names, so they can be reused. Keep it cohesive, minimal, and premium.";
+        return p;
+      }
+    }
+  ];
+
+  /* ---------- landing: modules showcase ---------- */
+  var mg=$('#modules-grid');
+  MODULES.forEach(function(m){
+    mg.appendChild(el('<div class="mod-card"><div class="mod-glyph">'+m.glyph+'</div><h3>'+esc(m.name)+'</h3><p>'+esc(m.tag)+'</p></div>'));
+  });
+
+  /* ---------- features ---------- */
+  var FEAT=[
+    {t:"8 tools, satu langganan",d:"Logo, kemasan, banner, poster, katalog, mockup, konten, brand kit — semua di satu tempat.",i:g('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>')},
+    {t:"Tanpa skill desain",d:"Nggak perlu Canva atau Photoshop. Isi brief, AI yang menyusun promptnya.",i:g('<path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="9"/>')},
+    {t:"Kualitas agensi",d:"Setiap prompt dibangun pakai framework desain profesional, bukan asal jadi.",i:g('<path d="M12 3l2.5 5 5.5.8-4 4 1 5.5L12 20l-5 2.8 1-5.5-4-4 5.5-.8z"/>')},
+    {t:"Semua format",d:"Sosmed, cetak, kemasan, merchandise — tinggal pilih tools yang sesuai.",i:g('<rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 18h18M9 22h6"/>')},
+    {t:"Cepat & konsisten",d:"Dari brief ke desain profesional dalam hitungan menit, brand tetap seragam.",i:g('<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 3h6"/>')},
+    {t:"Modal foto & ide",d:"Cukup satu foto atau deskripsi singkat untuk mulai membuat.",i:g('<rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/>')}
+  ];
+  var fg=$('#feat-grid');
+  FEAT.forEach(function(f){fg.appendChild(el('<div class="feat"><div class="ico">'+f.i+'</div><h3>'+f.t+'</h3><p>'+f.d+'</p></div>'));});
+
+  /* ---------- steps ---------- */
+  var STEPS=[
+    {t:"Pilih tools",d:"Buka studio, pilih salah satu dari 8 tools sesuai kebutuhanmu."},
+    {t:"Isi brief + salin",d:"Isi kolom singkat, klik Buat Prompt — prompt profesional tersusun otomatis."},
+    {t:"Tempel ke ChatGPT",d:"Lampirkan foto bila perlu, tempel prompt, kirim. Desainmu jadi."}
+  ];
+  var st=$('#steps');
+  STEPS.forEach(function(s,i){st.appendChild(el('<div class="step"><div class="step-n">'+(i+1)+'</div><h3>'+s.t+'</h3><p>'+s.d+'</p></div>'));});
+
+  /* ---------- pricing ---------- */
+  var CHK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>';
+  function priceCard(o){
+    var feats=o.feats.map(function(f){return '<li>'+CHK+'<span>'+f+'</span></li>';}).join('');
+    return '<div class="price-card'+(o.feature?' feature':'')+'">'+(o.tag?'<div class="price-tag">'+o.tag+'</div>':'')+'<h3>'+o.name+'</h3><div class="price-num"><span class="rp">Rp</span>'+esc(o.price)+(o.strike?' <span class="st">'+esc(o.strike)+'</span>':'')+'</div><ul class="price-feats">'+feats+'</ul><a class="btn '+(o.feature?'btn-primary':'btn-ghost')+'" href="'+esc(o.url)+'">'+o.cta+'</a></div>';
+  }
+  var pg=$('#price-grid');
+  pg.appendChild(el(priceCard({feature:true,tag:"Early Access",name:"Akses Penuh",price:C.price,strike:C.priceStrike,url:C.paymentUrl,cta:"Beli Sekarang",
+    feats:["Akses 8 tools studio selamanya","Logo, kemasan, banner, poster, dll","Prompt profesional siap pakai","Update & tools baru"]})));
+  if(C.showResellerTier){
+    pg.appendChild(el(priceCard({feature:false,name:"Lisensi Whitelabel",price:C.resellerPrice,strike:C.resellerStrike,url:(C.resellerPaymentUrl||C.paymentUrl),cta:"Ambil Lisensi Reseller",
+      feats:["Semua yang ada di Akses Penuh","Hak jual ulang ke pelangganmu","Rebranding jadi milikmu","Keuntungan 100% milikmu"]})));
+  }
+
+  /* ---------- footer ---------- */
+  var fs=$('#foot-social');
+  var IG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>';
+  var FB='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H7v3h3v6h3v-6h3l1-3h-4v-2c0-.6.4-1 1-1z"/></svg>';
+  if(C.instagramUrl) fs.appendChild(el('<a href="'+esc(C.instagramUrl)+'" target="_blank" rel="noopener" title="Instagram">'+IG+'</a>'));
+  if(C.facebookUrl) fs.appendChild(el('<a href="'+esc(C.facebookUrl)+'" target="_blank" rel="noopener" title="Facebook">'+FB+'</a>'));
+  $('#foot-copy').textContent='© '+(new Date().getFullYear())+' '+C.brandName;
+  $('#hero-buy').setAttribute('href',C.paymentUrl);
+  $('#hero-buy-label').textContent='Beli Sekarang — Rp '+C.price;
+
+  /* ---------- view routing ---------- */
+  function setView(v){document.body.dataset.view=v;window.scrollTo(0,0);}
+  document.addEventListener('click',function(e){var t=e.target.closest('[data-goto]');if(t){e.preventDefault();setView(t.getAttribute('data-goto'));}});
+
+  /* ---------- auth ---------- */
+  function store(k,v){try{sessionStorage.setItem(k,v);}catch(e){}}
+  function read(k){try{return sessionStorage.getItem(k);}catch(e){return null;}}
+  async function sha256(str){var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');}
+  async function emailInSheet(email){
+    if(!C.sheetCsvUrl) return true;
+    var res=await fetch(C.sheetCsvUrl,{cache:'no-store'}); if(!res.ok) throw new Error('sheet');
+    var txt=await res.text(), target=email.trim().toLowerCase();
+    return txt.split(/\r?\n/).some(function(line){var cell=(line.split(',')[0]||'').trim().replace(/^"|"$/g,'').toLowerCase();return cell&&cell!=='email'&&cell===target;});
+  }
+  var loginForm=$('#login-form'), msg=$('#login-msg'), lbtn=$('#login-btn');
+  loginForm.addEventListener('submit',async function(e){
+    e.preventDefault(); msg.className='auth-msg'; msg.textContent='';
+    var email=$('#in-email').value.trim(), pass=$('#in-pass').value;
+    lbtn.disabled=true; lbtn.textContent='Memeriksa...';
+    try{
+      var h=await sha256(SALT+pass);
+      if(h!==C.loginPasswordHash) throw {m:'Password salah. Coba lagi.'};
+      if(!(await emailInSheet(email))) throw {m:'Email belum terdaftar. Pakai email saat pembelian.'};
+      store('kv_auth','1'); setView('app');
+    }catch(err){msg.className='auth-msg err';msg.textContent=err&&err.m?err.m:'Tidak bisa memverifikasi email. Coba lagi.';}
+    finally{lbtn.disabled=false;lbtn.textContent='Masuk';}
+  });
+  $('#logout-btn').addEventListener('click',function(){try{sessionStorage.removeItem('kv_auth');}catch(e){} showLauncher(); setView('landing');});
+  if(read('kv_auth')==='1') setView('app');
+
+  /* ================= STUDIO: launcher + modules ================= */
+  var launcher=$('#launcher'), moduleView=$('#module-view');
+  var mForm=$('#m-form'), mOut=$('#m-out'), mActions=$('#m-actions'), mCopied=$('#m-copied');
+  var lastPrompt="", activeMod=null;
+
+  var lg=$('#module-grid');
+  MODULES.forEach(function(m){
+    var card=el('<div class="mod-card clickable"><div class="mod-glyph">'+m.glyph+'</div><h3>'+esc(m.name)+'</h3><p>'+esc(m.tag)+'</p></div>');
+    card.addEventListener('click',function(){openModule(m);});
+    lg.appendChild(card);
+  });
+
+  function fieldHTML(f){
+    var lab='<label for="mf-'+f.k+'">'+esc(f.l)+'</label>';
+    var inner;
+    if(f.t==='ta') inner='<textarea id="mf-'+f.k+'" data-k="'+f.k+'" placeholder="'+esc(f.ph||'')+'"></textarea>';
+    else if(f.t==='sel'){var opts=(f.o||[]).map(function(o){return '<option value="'+esc(o[0])+'">'+esc(o[1])+'</option>';}).join('');inner='<select id="mf-'+f.k+'" data-k="'+f.k+'">'+opts+'</select>';}
+    else inner='<input id="mf-'+f.k+'" data-k="'+f.k+'" type="text" placeholder="'+esc(f.ph||'')+'"/>';
+    var hint=f.hint?'<div class="hint">'+esc(f.hint)+'</div>':'';
+    return '<div class="field'+(f.full?' full':'')+'">'+lab+inner+hint+'</div>';
+  }
+  function openModule(m){
+    activeMod=m; lastPrompt="";
+    $('#m-title').textContent=m.name;
+    $('#m-sub').textContent=m.tag;
+    $('#m-note').innerHTML='<b>Cara pakai:</b> '+m.note;
+    mForm.innerHTML=m.fields.map(fieldHTML).join('');
+    mOut.className='out-pre out-empty'; mOut.innerHTML='Isi brief di sebelah kiri, lalu klik <b style="color:var(--accent);margin:0 4px">Buat Prompt</b>.';
+    mActions.style.display='none';
+    launcher.style.display='none'; moduleView.style.display=''; window.scrollTo(0,0);
+  }
+  function showLauncher(){moduleView.style.display='none';launcher.style.display='';window.scrollTo(0,0);}
+  $('#back-btn').addEventListener('click',showLauncher);
+
+  function getVals(){var o={};Array.prototype.forEach.call(mForm.querySelectorAll('[data-k]'),function(inp){o[inp.getAttribute('data-k')]=inp.value;});return o;}
+
+  $('#m-gen').addEventListener('click',function(){
+    if(!activeMod) return;
+    var v=getVals();
+    var missing=activeMod.fields.filter(function(f){return f.req && !(v[f.k]||'').trim();});
+    if(missing.length){
+      mOut.className='out-pre out-empty';
+      mOut.innerHTML='Isi dulu <b style="color:var(--accent);margin:0 4px">'+esc(missing[0].l.replace(' *',''))+'</b> ya.';
+      mActions.style.display='none'; return;
+    }
+    lastPrompt=activeMod.build(v);
+    mOut.className='out-pre'; mOut.textContent=lastPrompt; mActions.style.display='flex'; mOut.scrollTop=0;
+  });
+  $('#m-copy').addEventListener('click',function(){
+    if(!lastPrompt) return;
+    navigator.clipboard.writeText(lastPrompt).then(function(){mCopied.classList.add('show');setTimeout(function(){mCopied.classList.remove('show');},1600);});
+  });
+  $('#m-chatgpt').setAttribute('href',C.chatgptUrl||'https://chatgpt.com/');
+  if(C.gptUrl){var mgpt=$('#m-gpt');mgpt.setAttribute('href',C.gptUrl);mgpt.style.display='';}
+})();
+</script>
+</body>
+</html>
